@@ -6,18 +6,19 @@ using System.Net.NetworkInformation;
 class Program
     // Версия с выходом с консольного приложения чере ReadLine
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         if (args.Length == 0)
         {
 
-            Server.AcceptMess();
+            await Server.AcceptMess();
         }
         else
         {
             for (int i = 0; i < 1; i++)
             {
-                 new Thread(() => Client.SendMessage($"{args[0]}  {i} - число с Main")).Start();
+
+            await Client.SendMessage($"{args[0]}  {i} - число с Main");
             }
 
         }

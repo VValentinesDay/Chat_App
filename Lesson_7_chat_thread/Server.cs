@@ -22,7 +22,7 @@ namespace Lesson_7_chat_thread
         }
 
 
-        public static void AcceptMess()
+        public static async Task AcceptMess()
         {
             //IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Any, 0);
             //UdpClient udpClient = new UdpClient(16876);
@@ -36,11 +36,13 @@ namespace Lesson_7_chat_thread
             {
                 Task exit = Task.Run(() => Exit());
 
-                byte[] buffer = udpClient.Receive(ref iPEndPoint);
-                string str = Encoding.UTF8.GetString(buffer);
+
+                var data =  udpClient.Receive(ref iPEndPoint);
+                //byte[] buffer = data.Buffer;
+                string str = Encoding.UTF8.GetString(data);
                 //Message? message = Message.FromJson(str);
                 //Console.WriteLine("Отправитель: " + message.Name + "Текст: " + message.Text);
-                Thread thread = new Thread(() =>
+                await Task.Run(async () =>
                 {
                     Message? message = Message.FromJson(str);
                     Console.WriteLine(message?.ToString());
@@ -49,9 +51,9 @@ namespace Lesson_7_chat_thread
                     Message response = new Message () { Name = "Server", Text = "Accepted", DateTime = DateTime.Now };
                     string resp = response.ToJson();
                     byte[] respBytes = Encoding.UTF8.GetBytes(resp);
-                    udpClient.Send(respBytes, iPEndPoint);
+                    await udpClient.SendAsync(respBytes, iPEndPoint);
                 });
-                thread.Start(); 
+               
             }
 
         }
