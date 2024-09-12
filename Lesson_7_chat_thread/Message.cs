@@ -12,10 +12,17 @@ namespace Chat_Web_App
 {
     public class Message
     {
+        // 
+
         public Message() { }
-        public string Name { get; set; }
-        public string Text { get; set; }
-        public DateTime DateTime { get; set; }
+
+
+        public string FromName {  get; set; }
+        public string ToName {  get; set; }
+
+        public string? Name { get; set; } // используется для приёма имени в сервере или клиенте
+        public string? Text { get; set; }
+        public DateTime? DateTime { get; set; }
 
         public string ToJson()
         {
@@ -30,7 +37,7 @@ namespace Chat_Web_App
 
         public override string ToString()
         {
-            return $"{Name} {Text} {DateTime.ToShortTimeString()}";
+            return $"{Name} {Text} ";
         }
 
 

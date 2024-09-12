@@ -12,31 +12,54 @@ namespace Lesson_7_chat_thread
     internal class Client
     {
         public async static Task SendMessage(string name)
-            
+
         {
+
             //IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 12345);
             IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 16876);
             // any не указывается здесь
             UdpClient udpClient = new UdpClient();
-            Message message = new Message { Name = name, Text = "Hi", DateTime = DateTime.Now };
-            string response = message.ToJson();
-            byte[] responsByte = Encoding.UTF8.GetBytes(response);
-            await udpClient.SendAsync(responsByte, iPEndPoint);
-            Console.WriteLine("Ожидание ответа.");
+
+            while (true)
+            {
+
+                Console.WriteLine("Введите имя получателя");
+                string toName = Console.ReadLine();
+
+                if (String.IsNullOrEmpty(toName))
+                {
+                    Console.WriteLine("Вы не ввели имя пользователя");
+                    continue;
+                }
+
+                Console.WriteLine("Введите сообщение");
+                string text = Console.ReadLine();
+
+                if (text.ToLower() == "ex") {
+                    break;
+                }
 
 
-            //var data = await udpClient.ReceiveAsync();
 
-            byte[] answer = udpClient.Receive(ref iPEndPoint);
-            Console.WriteLine("Ответ получен. Перевод в строку...");
-            string anserStr = Encoding.UTF8.GetString(answer);
-            Message answerMes = Message.FromJson(anserStr);
+                Message message = new Message { Name = name, FromName = name, ToName = toName, Text = text };
 
-            Console.WriteLine(answerMes.ToString());
+
+
+                string response = message.ToJson();
+                byte[] responsByte = Encoding.UTF8.GetBytes(response);
+                await udpClient.SendAsync(responsByte, iPEndPoint);
+                Console.WriteLine("Ожидание ответа.");
+
+
+                //var data = await udpClient.ReceiveAsync();
+
+                byte[] answer = udpClient.Receive(ref iPEndPoint);
+                Console.WriteLine("Ответ получен. Перевод в строку...");
+                string anserStr = Encoding.UTF8.GetString(answer);
+                Message answerMes = Message.FromJson(anserStr);
+
+                Console.WriteLine(answerMes.ToString());
+            }
         }
-       
-        
-    
-    
     }
 }
